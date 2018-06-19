@@ -15,3 +15,7 @@ This is a basic sample using locize with vue-i18n and comes with:
 Just open `index.html` in your browser
 
 Open `index.html?locize=true` to show the incontext editor -> click a text fragment to edit it in locize
+
+## for save missings
+
+create a project at [https://locize.com](https://locize.com) and copy your projectId and API key to the variables in the index.html script section!
