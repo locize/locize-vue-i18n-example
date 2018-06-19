@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-i18n/dist/vue-i18n.js"></script>
+    <script src="https://unpkg.com/locizer/locizer.min.js"></script>
+    <script src="https://unpkg.com/locize-editor/locize-editor.js"></script>
+  </head>
+  <body style="display: block;">
+    <div id="app">
+      <p>{{ $t("message.hello") }}</p>
+    </div>
+    <script>
+      var NAMESPACE = 'translations'
+      var PROJECTID = '889f4100-3f3d-45af-b3ba-31780ca44684'
+      var APIKEY = 'ENTER_YOUR_API_KEY_FOR_SAVE_MISSING'
+      var REFERENCELANGUAGE = 'en'
+
+      // init locizer (https://github.com/locize/locizer)
+      locizer
+        .init({
+          fallbackLng: 'en',
+          referenceLng: REFERENCELANGUAGE,
+          projectId: PROJECTID,
+          apiKey: APIKEY,
+        })
+        .load(NAMESPACE, (err, translations, detectedLng) => {
+          // build message catalog format
+          var messages = {};
+          messages[detectedLng] = translations;
+
+          // Create VueI18n instance with options
+          const i18n = new VueI18n({
+            locale: detectedLng, // set locale
+            messages: messages, // set locale messages
+            missing: function(locale, path, vue) {
+              // pipe to locize - that key will be created for you
+              locizer.add(NAMESPACE, path, path);
+            }
+          })
+
+          // Create a Vue instance with `i18n` option
+          new Vue({ i18n }).$mount('#app')
+
+          // set body visible on ready
+          document.body.style.display = 'block';
+
+          // init incontext editor
+          locizeEditor.init({
+            lng: detectedLng,
+            defaultNS: NAMESPACE,
+            referenceLng: REFERENCELANGUAGE,
+            projectId: PROJECTID
+          })
+        });
+    </script>
+  </body>
+</html>
